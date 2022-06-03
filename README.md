@@ -29,7 +29,7 @@ Make directory and run `npm init` inside the project root, give it a name, accep
 All in one command:
 `npm i ganache-cli mocha solc@0.4.26 fs-extra web3 @truffle/hdwallet-provider`
 
-- [web3](https://github.com/ChainSafe/web3.js#readme)
+- [web3](https://github.com/ChainSafe/web3.js#readme) => `npm i web3`
 - [solc](https://github.com/ethereum/solc-js#readme)
 - [mocha](https://mochajs.org/)
 - [ganache-cli](https://github.com/trufflesuite/ganache#readme)
@@ -78,10 +78,10 @@ https://eth-converter.com/
 
 https://iancoleman.io/bip39/
 
-## 2. Install next.js
+## 2. Install next.js and React
 
 - `npm install next react react-dom`
-- and add in package.json a second script: "dev": "next dev"
+- Add in package.json a second script: "dev": "next dev"
 
 ```json
 "scripts": {
@@ -90,8 +90,5 @@ https://iancoleman.io/bip39/
   },
 ```
 
-- Be sure to be in main directory
 - Add a pages folder in the main root for all the pages
 - `npm run dev` and nextjs does the job
-
-
