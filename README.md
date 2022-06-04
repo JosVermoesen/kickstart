@@ -92,3 +92,8 @@ https://iancoleman.io/bip39/
 
 - Add a pages folder in the main root for all the pages
 - `npm run dev` and nextjs does the job
+
+### Install UI package for React
+
+- `npm i semantic-ui-react`
+- `npm i semantic-ui-css`
