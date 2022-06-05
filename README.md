@@ -97,3 +97,7 @@ https://iancoleman.io/bip39/
 
 - `npm i semantic-ui-react`
 - `npm i semantic-ui-css`
+
+### Install next-routes
+
+- `npm i next-routes --legacy-peer-deps`
