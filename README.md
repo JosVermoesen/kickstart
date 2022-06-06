@@ -29,6 +29,8 @@ Make directory and run `npm init` inside the project root, give it a name, accep
 All in one command:
 `npm i ganache-cli mocha solc@0.4.26 fs-extra web3 @truffle/hdwallet-provider`
 
+TODO: ganache-cli is now ganache ??
+
 - [web3](https://github.com/ChainSafe/web3.js#readme) => `npm i web3`
 - [solc](https://github.com/ethereum/solc-js#readme)
 - [mocha](https://mochajs.org/)
@@ -97,7 +99,3 @@ https://iancoleman.io/bip39/
 
 - `npm i semantic-ui-react`
 - `npm i semantic-ui-css`
-
-### Install next-routes
-
-- `npm i next-routes --legacy-peer-deps`

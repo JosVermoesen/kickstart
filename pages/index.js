@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import { Button, Card, Icon } from 'semantic-ui-react';
+import Link from 'next/link';
 
 import Layout from '../components/layout';
 import factory from '../code/factory';
@@ -16,7 +16,11 @@ class CampaignIndex extends Component {
     const items = this.props.campaigns.map((address) => {
       return {
         header: address,
-        description: <a>View Campaign</a>,
+        description: (
+          <Link href={`/campaigns/${address}`}>
+            <a>View Campaign</a>
+          </Link>
+        ),
         fluid: true,
       };
     });
@@ -26,16 +30,18 @@ class CampaignIndex extends Component {
   render() {
     return (
       <Layout>
-        <div>
-          <h3>Open Campaigns</h3>
-          <Button floated='right' primary icon labelPosition='left'>
-            <Icon name='add circle' />
-            Create Campaign
-          </Button>
-          {this.renderCampaigns()}
-        </div>
+        <h3>Open Campaigns</h3>
+
+        {this.renderCampaigns()}
       </Layout>
     );
   }
 }
 export default CampaignIndex;
+
+/* 
+<Button floated='right' href='/campaigns/new' primary icon labelPosition='left'>
+  <Icon name='add circle' />
+  Create Campaign
+</Button>;
+ */
