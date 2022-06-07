@@ -1,121 +1,105 @@
 import React, { useState } from 'react';
+import { Form, Button, Icon, Input, Message } from 'semantic-ui-react';
 import { useRouter } from 'next/router';
-import { Form, Button, Input, Message } from 'semantic-ui-react';
-
 import Layout from '../../components/layout';
 import factory from '../../code/factory';
 import web3 from '../../code/web3';
 
-function CampaignNew(props) {
-  const [minimumContribution, setMinimumContribution] = useState(0);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+const INITIAL_TRANSACTION_STATE = {
+  loading: '',
+  error: '',
+  success: '',
+};
+
+//Hosts the top level layout of our app
+const CampaignNew = () => {
   const router = useRouter();
+  const [minumumContribution, setMinimumContribution] = useState('');
+  const [transactionState, setTransactionState] = useState(
+    INITIAL_TRANSACTION_STATE
+  );
+  const { loading, error, success } = transactionState;
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    //There's definitely a better way to use loading,error,success surely
+    setTransactionState({
+      ...INITIAL_TRANSACTION_STATE,
+      loading: 'Transaction is processing....',
+    });
+    const accounts = await web3.eth.getAccounts();
+    await factory.methods
+      .createCampaign(minumumContribution)
+      .send({
+        //no need to specify gas amount -metamask does this
+        from: accounts[0],
+      })
+      .then((res) => {
+        console.log(res);
+        const etherscanLink = `https://rinkeby.etherscan.io/tx/${res.transactionHash}`;
+        setTransactionState({
+          ...INITIAL_TRANSACTION_STATE,
+          success: (
+            <a href={etherscanLink} target='_blank'>
+              View the transaction on Etherscan
+            </a>
+          ),
+        });
+        router.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+        setTransactionState({
+          ...INITIAL_TRANSACTION_STATE,
+          error: err.message,
+        });
+      });
+    setMinimumContribution('');
+  };
 
-    setLoading(true);
-    setErrorMessage('');
-    try {
-      const accounts = await web3.eth.getAccounts();
-
-      await factory.methods
-        .createCampaign(minimumContribution)
-        .send({ from: accounts[0] });
-
-      router.push('/');
-    } catch (err) {
-      setErrorMessage(err.message);
-    }
-
-    setLoading(false);
+  const renderMessage = () => {
+    return (
+      <Message icon negative={Boolean(error)} success={Boolean(success)}>
+        <Icon
+          name={
+            loading ? 'circle notched' : error ? 'times circle' : 'check circle'
+          }
+          loading={Boolean(loading)}
+        />
+        <Message.Content>
+          {Boolean(success) && (
+            <Message.Header>Transaction Success!</Message.Header>
+          )}
+          {loading ? loading : error ? error : success}
+        </Message.Content>
+      </Message>
+    );
   };
 
   return (
     <Layout>
-      <h3>Create a Campaign</h3>
-      <Form error={!!errorMessage} onSubmit={onSubmit}>
+      <h1>Create a Campaign</h1>
+      <Form onSubmit={onSubmit}>
         <Form.Field>
-          <label>Minimum contribution</label>
+          <label>Minumum Contribution</label>
           <Input
             label='wei'
             labelPosition='right'
-            value={minimumContribution}
-            onChange={(event) => setMinimumContribution(event.target.value)}
+            focus
+            type='number' // enforce number only content
+            min='0' //enforce positive numbers only
+            disabled={Boolean(loading)} //disable input if loading
+            value={minumumContribution}
+            onChange={(e) => setMinimumContribution(e.target.value)}
           />
         </Form.Field>
-        <Message error header='Oops!' content={errorMessage} />
-        <Button primary loading={loading}>
+        <Button color='teal' disabled={Boolean(loading)}>
           Create!
         </Button>
       </Form>
+      {Boolean(loading || error || success) && renderMessage()}
     </Layout>
   );
-}
+};
 
 export default CampaignNew;
-
-/* import React, { Component } from 'react';
-import { Form, Button, Input, Message } from 'semantic-ui-react';
-import Layout from '../../components/layout';
-import factory from '../../code/factory';
-import web3 from '../../code/web3';
-
-class CampaignNew extends Component {
-  state = {
-    minimumContribution: '',
-    errorMessage: '',
-    loading: false,
-  };
-
-  onSubmit = async (event) => {
-    //  const router = useRouter();
-    event.preventDefault();
-
-    this.setState({ loading: true, errorMessage: '' });
-
-    try {
-      const accounts = await web3.eth.getAccounts();
-      await factory.methods
-        .createCampaign(this.state.minimumContribution)
-        .send({
-          from: accounts[0],
-          // Metamask calculates gas automatically.
-          // So unlike in tests, we do not have to specify gas here
-        });
-    } catch (err) {
-      // console.log(err.message);
-      this.setState({ errorMessage: err.message });
-    }
-
-    this.setState({ loading: false });
-  };
-
-  render() {
-    return (
-      <Layout>
-        <h3>Create a Campaign</h3>
-        <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
-          <Form.Field>
-            <Message error header='Oops!' content={this.state.errorMessage} />
-            <label>Minimum Contribution</label>
-            <Input
-              label='wei'
-              labelPosition='right'
-              value={this.state.minimumContribution}
-              onChange={(event) =>
-                this.setState({ minimumContribution: event.target.value })
-              }
-            />
-          </Form.Field>
-          <Button loading={this.state.loading} primary>
-            Create!
-          </Button>
-        </Form>
-      </Layout>
-    );
-  }
-}
-export default CampaignNew;
- */

@@ -1,47 +1,50 @@
-import React, { Component } from 'react';
-import { Button, Card, Icon } from 'semantic-ui-react';
+import React from 'react';
+import { Card } from 'semantic-ui-react';
+import factory from '../code/factory';
+import Layout from '../components/layout';
 import Link from 'next/link';
 
-import Layout from '../components/layout';
-import factory from '../code/factory';
+function CampaignIndex({ campaigns }) {
+  // console.log('campaigns', campaigns);
 
-class CampaignIndex extends Component {
-  // typical for nextjs!
-  static async getInitialProps() {
-    const campaigns = await factory.methods.getDeployedCampaigns().call();
-    return { campaigns };
-  }
+  const items = campaigns.map((address) => {
+    // console.log(address);
+    return {
+      header: address,
+      description: (
+        <Link href={`/campaigns/${address}`}>
+          <a>View campaign</a>
+        </Link>
+      ),
+      fluid: true,
+    };
+  });
 
-  renderCampaigns() {
-    const items = this.props.campaigns.map((address) => {
-      return {
-        header: address,
-        description: (
-          <Link href={`/campaigns/${address}`}>
-            <a>View Campaign</a>
-          </Link>
-        ),
-        fluid: true,
-      };
-    });
-    return <Card.Group items={items} />;
-  }
-
-  render() {
-    return (
-      <Layout>
-        <h3>Open Campaigns</h3>
-
-        {this.renderCampaigns()}
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <>
+        <h1>Campaigns</h1>
+        {/* <Button
+          icon
+          floated='right'
+          color='teal'
+          size='large'
+          onClick={() => router.push('/campaigns/new')}
+          style={{ marginBottom: '20px' }}
+        >
+          <Icon name='add circle' />
+          {'   '}Create New Campaign
+        </Button> */}
+      </>
+      <Card.Group items={items} centered />
+    </Layout>
+  );
 }
-export default CampaignIndex;
 
-/* 
-<Button floated='right' href='/campaigns/new' primary icon labelPosition='left'>
-  <Icon name='add circle' />
-  Create Campaign
-</Button>;
- */
+//uses server side rendering to call the campaign contracts (so good for slow devices)
+CampaignIndex.getInitialProps = async () => {
+  const campaigns = await factory.methods.getDeployedCampaigns().call();
+  return { campaigns };
+};
+
+export default CampaignIndex;
