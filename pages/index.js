@@ -1,13 +1,16 @@
 import React from 'react';
-import { Card } from 'semantic-ui-react';
-import factory from '../code/factory';
-import Layout from '../components/layout';
+import { Button, Card, Icon } from 'semantic-ui-react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
+import factory from '../code/factory';
+import Layout from '../components/layout';
+
 function CampaignIndex({ campaigns }) {
+  const router = useRouter();
   // console.log('campaigns', campaigns);
 
-  const items = campaigns.map((address) => {
+  const items = campaigns.map((address) => {    
     // console.log(address);
     return {
       header: address,
@@ -16,6 +19,7 @@ function CampaignIndex({ campaigns }) {
           <a>View campaign</a>
         </Link>
       ),
+      style: { overflowWrap: 'break-word' },
       fluid: true,
     };
   });
@@ -24,7 +28,7 @@ function CampaignIndex({ campaigns }) {
     <Layout>
       <>
         <h1>Campaigns</h1>
-        {/* <Button
+        <Button
           icon
           floated='right'
           color='teal'
@@ -34,17 +38,17 @@ function CampaignIndex({ campaigns }) {
         >
           <Icon name='add circle' />
           {'   '}Create New Campaign
-        </Button> */}
+        </Button>
       </>
       <Card.Group items={items} centered />
     </Layout>
   );
 }
 
-//uses server side rendering to call the campaign contracts (so good for slow devices)
-CampaignIndex.getInitialProps = async () => {
-  const campaigns = await factory.methods.getDeployedCampaigns().call();
-  return { campaigns };
-};
-
 export default CampaignIndex;
+
+//uses server side rendering to call the campaign contracts
+export const getServerSideProps = async () => {
+  const campaigns = await factory.methods.getDeployedCampaigns().call();
+  return { props: { campaigns } };
+};

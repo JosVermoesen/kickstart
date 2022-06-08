@@ -1,6 +1,9 @@
 import React from 'react';
+import { Card } from 'semantic-ui-react';
+
 import Layout from '../../components/layout';
 import Campaign from '../../code/campaign';
+import web3 from '../../code/web3';
 
 const CampaignShow = ({
   address,
@@ -10,51 +13,68 @@ const CampaignShow = ({
   approversCount,
   manager,
 }) => {
+  const items = [
+    {
+      header: 'Manager Address',
+      meta: manager,
+      description:
+        'The manager created this campaign and can create requests to withdraw this money',
+      style: { overflowWrap: 'break-word' },
+    },
+    {
+      header: 'Minimum Contribution',
+      meta: `${minimumContribution} wei`,
+      description:
+        'The minimum amount to contribute to this campaign in wei to become an approver',
+      style: { overflowWrap: 'break-word' },
+    },
+    {
+      header: 'Camapaign Balance',
+      meta: `${balance} wei = ${web3.utils.fromWei(balance, 'ether')} eth`,
+      description: 'How much money this campaign has left to spend',
+      style: { overflowWrap: 'break-word' },
+    },
+    {
+      header: 'Number of requests',
+      meta: requestCount,
+      description:
+        'A request tries to withdraw money from the account. Requests must be approved by a minimum 50% of approvers',
+      style: { overflowWrap: 'break-word' },
+    },
+    {
+      header: 'Number of Approvers',
+      meta: approversCount,
+      description:
+        'The number of approvers that have already contributed to this campaign',
+      style: { overflowWrap: 'break-word' },
+    },
+  ];
+
   return (
     <Layout>
       <h1>Campaign Details</h1>
-      <h4>Adress: {address}</h4>
-      <h5>Minimum: {minimumContribution}</h5>
-      <h5>Balance: {balance}</h5>
-      <h5>RequestCount: {requestCount}</h5>
-      <h5>ApproversCount: {approversCount}</h5>
-      <h5>Manager: {manager}</h5>
+      <Card.Group items={items}></Card.Group>
     </Layout>
   );
-};
-
-//uses server side rendering to call the campaign contracts (so good for slow devices)
-CampaignShow.getInitialProps = async (props) => {
-  const campaignDetails = Campaign(props.query.address);
-  const summary = await campaignDetails.methods.getSummary().call();
-
-  return {
-    address: props.query.address,
-    minimumContribution: summary[0],
-    balance: summary[1],
-    requestCount: summary[2],
-    approversCount: summary[3],
-    manager: summary[4],
-  };
 };
 
 export default CampaignShow;
-/* import React from 'react';
-import { useRouter } from 'next/router';
 
-import Layout from '../../components/layout';
-import Campaign from '../../code/campaign';
+//uses server side rendering to call the campaign contracts (so good for slow devices)
+export const getServerSideProps = async (props) => {
+  const campaignDetails = Campaign(props.query.address);
+  const summary = await campaignDetails.methods.getSummary().call();
+  // console.log(props.query);
+  // console.log(summary);
 
-const CampaignShow = () => {
-  const router = useRouter();
-  const { address } = router.query;
-  // console.log(router);
-
-  return (
-    <Layout>
-      <p>Campaign: {address} </p>
-    </Layout>
-  );
+  return {
+    props: {
+      address: props.query.address,
+      minimumContribution: summary[0],
+      balance: summary[1],
+      requestCount: summary[2],
+      approversCount: summary[3],
+      manager: summary[4],
+    },
+  };
 };
-
-export default CampaignShow; */
