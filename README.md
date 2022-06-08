@@ -99,3 +99,5 @@ https://iancoleman.io/bip39/
 
 - `npm i semantic-ui-react`
 - `npm i semantic-ui-css`
+
+Got stuck in course at 202. Thanks to [Alison]([https://github.com/ethereum/solc-js#readme](https://github.com/DeveloperAlly/solidity-react-campaign)) got to understand nextjs better and solved my own version of the campaign solution!
