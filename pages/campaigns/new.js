@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Button, Icon, Input, Message } from 'semantic-ui-react';
 import { useRouter } from 'next/router';
-import Layout from '../../components/layout';
-import factory from '../../code/factory';
-import web3 from '../../code/web3';
+
+import Layout from '../components/layout';
+
+import factory from '../../bc-components/factory';
+import web3 from '../../bc-components/web3';
 
 const INITIAL_TRANSACTION_STATE = {
   loading: '',

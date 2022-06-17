@@ -3,8 +3,9 @@ import { Button, Card, Icon } from 'semantic-ui-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-import factory from '../code/factory';
-import Layout from '../components/layout';
+import factory from '../bc-components/factory';
+
+import Layout from './components/layout';
 
 function CampaignIndex({ campaigns }) {
   const router = useRouter();

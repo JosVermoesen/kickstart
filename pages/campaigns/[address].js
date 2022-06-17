@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card } from 'semantic-ui-react';
 
-import Layout from '../../components/layout';
-import Campaign from '../../code/campaign';
-import web3 from '../../code/web3';
+import Layout from '../components/layout';
+
+import Campaign from '../../bc-components/campaign';
+import web3 from '../../bc-components/web3';
 
 const CampaignShow = ({
   address,

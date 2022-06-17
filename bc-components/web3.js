@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-const secrets = require('./../secrets/secrets');
+const secrets = require('../secrets/secrets');
 
 let web3;
 
